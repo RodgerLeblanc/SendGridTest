@@ -37,6 +37,9 @@ namespace SendGridTest.Helpers
         /// <returns></returns>
         public PropertyChangedManager<TSource> AddPropertyChanged<TProperty>(Expression<Func<TSource, TProperty>> expression, PropertyChangedDelegate<TSource> callback)
         {
+            if (callback == null)
+                throw new ArgumentNullException($"The value for {nameof(callback)} cannot be null.");
+
             if (!(expression.Body is MemberExpression memberExpression))
                 throw new InvalidOperationException("The lambda expression must refer to a property.");
 
@@ -64,7 +67,7 @@ namespace SendGridTest.Helpers
 
             if (_propertyCallbackMapper.TryGetValue(key, out PropertyMapperInfo propertyMapperInfo))
             {
-                if (propertyMapperInfo?.Callback == null)
+                if (propertyMapperInfo == null)
                     return;
 
                 object newValue = propertyMapperInfo.PropertyInfo.GetValue(sender);
